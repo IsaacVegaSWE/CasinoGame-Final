@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Create Account{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">♠ Royal Flush</div>
+    <h1 class="auth-title">Join the game</h1>
+    <p class="auth-sub">New players get 10,000 chips free.</p>
+
+    <form method="POST" action="{{ url_for('auth.register') }}" class="auth-form">
+      {{ form.hidden_tag() }}
+      <div class="field">
+        {{ form.username.label }}
+        {{ form.username(placeholder="choose a username") }}
+        {% for e in form.username.errors %}<span class="field-error">{{ e }}</span>{% endfor %}
+      </div>
+      <div class="field">
+        {{ form.email.label }}
+        {{ form.email(placeholder="your@email.com") }}
+        {% for e in form.email.errors %}<span class="field-error">{{ e }}</span>{% endfor %}
+      </div>
+      <div class="field">
+        {{ form.password.label }}
+        {{ form.password(placeholder="min 6 characters") }}
+        {% for e in form.password.errors %}<span class="field-error">{{ e }}</span>{% endfor %}
+      </div>
+      <div class="field">
+        {{ form.confirm_password.label }}
+        {{ form.confirm_password(placeholder="repeat password") }}
+        {% for e in form.confirm_password.errors %}<span class="field-error">{{ e }}</span>{% endfor %}
+      </div>
+      <button type="submit" class="btn-primary btn-full">Create Account</button>
+    </form>
+    <p class="auth-switch">Have an account? <a href="{{ url_for('auth.login') }}">Sign in</a></p>
+  </div>
+  <div class="auth-deco">
+    <span class="deco-suit s1">♠</span>
+    <span class="deco-suit s2">♥</span>
+    <span class="deco-suit s3">♦</span>
+    <span class="deco-suit s4">♣</span>
+  </div>
+</div>
+{% endblock %}

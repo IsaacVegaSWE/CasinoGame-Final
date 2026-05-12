@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Royal Flush{% endblock %} – Royal Flush Poker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  {% if current_user.is_authenticated %}
+  <nav class="topnav">
+    <a href="{{ url_for('main.lobby') }}" class="nav-brand">♠ Royal Flush</a>
+    <div class="nav-links">
+      <a href="{{ url_for('main.lobby') }}">Lobby</a>
+      <a href="{{ url_for('main.leaderboard') }}">Leaderboard</a>
+      <a href="{{ url_for('main.profile') }}">Profile</a>
+      <span class="chip-count">⬡ {{ current_user.chips | number_format if current_user.chips else current_user.chips }}</span>
+      <a href="{{ url_for('auth.logout') }}" class="btn-logout">Sign Out</a>
+    </div>
+  </nav>
+  {% endif %}
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for cat, msg in messages %}
+          <div class="flash flash-{{ cat }}">{{ msg }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main>{% block content %}{% endblock %}</main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

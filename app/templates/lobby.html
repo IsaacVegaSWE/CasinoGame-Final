@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Lobby{% endblock %}
+{% block content %}
+<div class="lobby-page">
+  <div class="lobby-header">
+    <h1>Poker Lobby</h1>
+    <button class="btn-primary" onclick="document.getElementById('create-modal').classList.add('open')">+ Create Table</button>
+  </div>
+
+  <div class="rooms-grid">
+    {% if rooms %}
+      {% for room in rooms %}
+      <div class="room-card {% if room.status == 'playing' %}room-active{% endif %}">
+        <div class="room-name">{{ room.name }}</div>
+        <div class="room-meta">
+          <span class="badge badge-{{ room.status }}">{{ room.status }}</span>
+          <span>Blinds: {{ room.small_blind }}/{{ room.big_blind }}</span>
+          <span>Buy-in: {{ room.buy_in }}</span>
+        </div>
+        <a href="{{ url_for('game.join_room_redirect', room_id=room.room_id) }}" class="btn-secondary btn-full room-join">
+          {% if room.status == 'playing' %}Spectate{% else %}Join Table{% endif %}
+        </a>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-suits">♠ ♥ ♦ ♣</div>
+        <p>No tables open. Be the first to deal.</p>
+        <button class="btn-primary" onclick="document.getElementById('create-modal').classList.add('open')">Create a Table</button>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Create Table Modal -->
+<div class="modal-overlay" id="create-modal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2>New Table</h2>
+      <button class="modal-close" onclick="document.getElementById('create-modal').classList.remove('open')">✕</button>
+    </div>
+    <form method="POST" action="{{ url_for('game.create_room') }}" class="auth-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <div class="field">
+        <label>Table Name</label>
+        <input type="text" name="name" placeholder="{{ current_user.username }}'s Table" maxlength="60"/>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Small Blind</label>
+          <select name="small_blind">
+            <option value="25">25</option>
+            <option value="50" selected>50</option>
+            <option value="100">100</option>
+            <option value="250">250</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Buy-in</label>
+          <select name="buy_in">
+            <option value="500">500</option>
+            <option value="1000" selected>1,000</option>
+            <option value="2000">2,000</option>
+            <option value="5000">5,000</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Max Players</label>
+          <select name="max_players">
+            <option value="2">2</option>
+            <option value="4">4</option>
+            <option value="6" selected>6</option>
+            <option value="9">9</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn-primary btn-full">Create &amp; Join</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

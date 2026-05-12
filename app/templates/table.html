@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}{{ room.name }}{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}"/>
+{% endblock %}
+{% block content %}
+<div class="table-wrap" id="table-wrap">
+
+  <!-- Top Bar -->
+  <div class="table-topbar">
+    <a href="{{ url_for('main.lobby') }}" class="btn-ghost" id="leave-btn">← Leave</a>
+    <div class="room-info">
+      <span class="room-title">{{ room.name }}</span>
+      <span class="room-blinds">Blinds: {{ room.small_blind }}/{{ room.big_blind }}</span>
+    </div>
+    <div class="my-chips-display">⬡ <span id="my-chips-val">--</span></div>
+  </div>
+
+  <!-- Poker Table -->
+  <div class="table-arena">
+    <div class="felt-table" id="felt-table">
+
+      <!-- Community Cards -->
+      <div class="community-area">
+        <div class="pot-display">POT: <span id="pot-val">0</span></div>
+        <div class="community-cards" id="community-cards"></div>
+        <div class="phase-label" id="phase-label"></div>
+      </div>
+
+      <!-- Player Seats (rendered by JS) -->
+      <div class="seats-container" id="seats-container"></div>
+
+    </div>
+  </div>
+
+  <!-- Bottom Panel -->
+  <div class="bottom-panel">
+
+    <!-- My Hand -->
+    <div class="my-hand-panel">
+      <div class="hand-label">Your Hand</div>
+      <div class="my-cards" id="my-cards"></div>
+      <div class="hand-strength" id="hand-strength"></div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-panel" id="action-panel" style="display:none">
+      <div class="action-info">
+        <span>To call: <strong id="to-call-val">0</strong></span>
+        <span>Your bet: <strong id="my-bet-val">0</strong></span>
+      </div>
+      <div class="action-buttons">
+        <button class="act-btn btn-fold" id="btn-fold">Fold</button>
+        <button class="act-btn btn-check" id="btn-check">Check</button>
+        <button class="act-btn btn-call" id="btn-call">Call</button>
+        <button class="act-btn btn-raise" id="btn-raise">Raise</button>
+        <button class="act-btn btn-allin" id="btn-allin">All In</button>
+      </div>
+      <div class="raise-control" id="raise-control" style="display:none">
+        <input type="range" id="raise-slider" min="0" max="10000" value="200" class="raise-slider"/>
+        <input type="number" id="raise-input" class="raise-num" value="200" min="0"/>
+        <button class="act-btn btn-raise" id="btn-raise-confirm">Raise to <span id="raise-label">200</span></button>
+      </div>
+    </div>
+
+    <!-- Host Controls -->
+    <div class="host-controls" id="host-controls" style="display:none">
+      <button class="btn-primary" id="btn-start">Deal Hand</button>
+      <button class="btn-secondary" id="btn-next-hand" style="display:none">Next Hand</button>
+    </div>
+
+    <!-- Chat -->
+    <div class="chat-panel">
+      <div class="chat-messages" id="chat-messages"></div>
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Say something…" maxlength="200" autocomplete="off"/>
+        <button class="btn-send" id="btn-send">Send</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Showdown overlay -->
+<div class="showdown-overlay" id="showdown-overlay" style="display:none">
+  <div class="showdown-card">
+    <div class="showdown-title">🏆 Showdown</div>
+    <div class="showdown-body" id="showdown-body"></div>
+    {% if current_user.id == room.host_id %}
+    <button class="btn-primary" id="btn-next-hand-overlay">Next Hand →</button>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  const ROOM_ID = "{{ room.room_id }}";
+  const MY_USER_ID = {{ current_user.id }};
+  const IS_HOST = {{ 'true' if current_user.id == room.host_id else 'false' }};
+</script>
+<script src="{{ url_for('static', filename='js/table.js') }}"></script>
+{% endblock %}

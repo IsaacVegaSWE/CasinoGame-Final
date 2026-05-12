@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<div class="page-inner">
+  <div class="profile-card">
+    <div class="profile-avatar">{{ user.username[0].upper() }}</div>
+    <h1 class="profile-name">{{ user.username }}</h1>
+    <p class="profile-email">{{ user.email }}</p>
+    <div class="profile-stats">
+      <div class="stat">
+        <div class="stat-val">{{ "{:,}".format(user.chips) }}</div>
+        <div class="stat-label">Chips</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">{{ user.games_played }}</div>
+        <div class="stat-label">Hands Played</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">{{ user.games_won }}</div>
+        <div class="stat-label">Hands Won</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">{{ user.win_rate }}%</div>
+        <div class="stat-label">Win Rate</div>
+      </div>
+    </div>
+    <a href="{{ url_for('main.lobby') }}" class="btn-primary" style="margin-top:2rem">Back to Lobby</a>
+  </div>
+</div>
+{% endblock %}

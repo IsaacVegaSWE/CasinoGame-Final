@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Leaderboard{% endblock %}
+{% block content %}
+<div class="page-inner">
+  <h1 class="page-title">Leaderboard</h1>
+  <div class="leaderboard-table">
+    <div class="lb-row lb-head">
+      <span>#</span><span>Player</span><span>Chips</span><span>Wins</span><span>Played</span><span>Win %</span>
+    </div>
+    {% for player in players %}
+    <div class="lb-row {% if player.id == current_user.id %}lb-you{% endif %}">
+      <span class="lb-rank">
+        {% if loop.index == 1 %}🥇
+        {% elif loop.index == 2 %}🥈
+        {% elif loop.index == 3 %}🥉
+        {% else %}{{ loop.index }}{% endif %}
+      </span>
+      <span class="lb-name">{{ player.username }}</span>
+      <span class="lb-chips">{{ "{:,}".format(player.chips) }}</span>
+      <span>{{ player.games_won }}</span>
+      <span>{{ player.games_played }}</span>
+      <span class="lb-wr">{{ player.win_rate }}%</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
